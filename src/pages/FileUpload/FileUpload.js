@@ -39,7 +39,7 @@ const FileUpload = () => {
 
     return (
         <FileUploadStyles>
-            <h2 clasName="page-title">Import Data</h2>
+            <h2 className="page-title">Import Data</h2>
             <Box>
                 <Stack spacing={3} alignItems="flex-start">
                     <SelectInput
