@@ -6,13 +6,8 @@ const path = require('path');
 
 const Router = express.Router();
 
-Router.post("/api/import", (req, res) => {
-  const results = [];
-  const { fileName, account } = req.body;
-  fs.createReadStream(path.resolve(__dirname, `../data/${fileName}`))
-  .pipe(csv())
-  .on('data', (data) => {
-    const description = data['Transaction Description'] || data['Description'];
+const normalizeData = data => {
+  const description = data['Transaction Description'] || data['Description'];
     const amount = data['Transaction Amount'] || data['Amount'];
     let type = data['Transaction Type'] || data['Type'];
     if (type === 'Sale') {
@@ -25,14 +20,23 @@ Router.post("/api/import", (req, res) => {
     const [month, day, year] = date.split('/');
     date = `${year}-${month}-${day}`;
 
-    const record = {
-      account,
+    return {
       date,
       amount,
       type: type.toLowerCase(),
       description,
-      balance: data['Balance'] || 0.00,
+      balance: data['Balance'] || 0.00
     }
+};
+
+Router.post("/api/import", (req, res) => {
+  const results = [];
+  const { fileName, account } = req.body;
+  fs.createReadStream(path.resolve(__dirname, `../data/${fileName}`))
+  .pipe(csv())
+  .on('data', (data) => {
+    const normalizedData = normalizeData(data);
+    const record = { ...normalizedData, account };
     results.push(record)
     return results;
   })
