@@ -1,4 +1,4 @@
-import dbCreds from './dbCreds';
+const dbCreds = require('./dbCreds');
 
 const mysql = require("mysql");
 
