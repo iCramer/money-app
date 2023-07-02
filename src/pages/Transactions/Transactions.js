@@ -26,19 +26,6 @@ const Transactions = () => {
         setFilteredTrasactions(transactions);
     }, [transactions]);
 
-    // const formatCategories = catData => {
-    //     return catData.reduce((grouped, category) => {
-    //         if (grouped[category.label]) {
-    //             grouped[category.label].push(category.name);
-    //         }
-    //         else {
-    //             grouped[category.label] = [category.name];
-    //         }
-
-    //         return grouped;
-    //     }, {});
-    // };
-
     const getTransactions = () => {
         return axios.get(`/api/transactions`);
     };
@@ -166,6 +153,7 @@ const Transactions = () => {
             renderCell: trans => (
                 <CategoryCell
                     transaction={trans.row}
+                    onEditSubmit={onCatEditSubmit}
                     openModal={openCategoryModal}
                 />
             )

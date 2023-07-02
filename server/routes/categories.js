@@ -17,24 +17,24 @@ Router.get("/api/categories", (req, res) => {
   );
 });
 
-Router.put("/api/categories/update", (req, res) => {
-  const { label, name } = req.body;
-  mysqlConnection.query(
-    `UPDATE categories SET label="${label}" WHERE name = "${name}"`,
-    (err, results) => {
-      if (!err) {
-        res.send(results);
-      } else {
-        console.log(err);
-      }
-    }
-  );
-});
+// Router.put("/api/categories/update", (req, res) => {
+//   const { label, name } = req.body;
+//   mysqlConnection.query(
+//     `UPDATE categories SET label="${label}" WHERE name = "${name}"`,
+//     (err, results) => {
+//       if (!err) {
+//         res.send(results);
+//       } else {
+//         console.log(err);
+//       }
+//     }
+//   );
+// });
 
 Router.post("/api/categories/add", (req, res) => {
-  const { label, name } = req.body;
+  const { label } = req.body;
   mysqlConnection.query(
-    `INSERT INTO categories (label, name) VALUES("${label}", "${name}")`,
+    `INSERT INTO categories (label) VALUES("${label}")`,
     (err, results) => {
       if (!err) {
         res.send(results);
@@ -50,7 +50,7 @@ Router.post("/api/transactionCategories/add", (req, res) => {
   mysqlConnection.query(
     `INSERT INTO
       transaction_categories (transaction_desc, category_id)
-        VALUES ("${transDesc}", "${categoryId}")`,
+        VALUES ("${transDesc}", "${categoryId}") ON DUPLICATE KEY UPDATE transaction_desc="${transDesc}", category_id="${categoryId}"`,
     (err, results) => {
       if (!err) {
         res.send(results);

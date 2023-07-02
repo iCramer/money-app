@@ -10,20 +10,11 @@ const CategoryModal = ({ onEditSubmit, categoryId, open, onCancel }) => {
     const [catInputVal, setCatInputVal] = useState(categories[categoryId] || '');
 
     const updateCategory = () => {
-      if (categories.some(x => x.name === categoryId)) {
-          axios.put('/api/categories/update', {label: catInputVal, name: categoryId})
-          .then(() => {
-              setCatInputVal('');
-              onEditSubmit();
-          });
-      }
-      else {
-          axios.post('/api/categories/add', {label: catInputVal, name: categoryId})
-          .then(() => {
-              setCatInputVal('');
-              onEditSubmit();
-          });
-      }
+      axios.post('/api/categories/add', {label: catInputVal})
+      .then(() => {
+          setCatInputVal('');
+          onEditSubmit();
+      });
     };
 
     const handleCancel = () => {
