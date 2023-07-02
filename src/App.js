@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -19,20 +18,8 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import PaymentIcon from '@mui/icons-material/Payment';
 import BackupIcon from '@mui/icons-material/Backup';
 import FileUpload from './pages/FileUpload';
-import axios from 'axios';
 
 const App = () => {
-  const [transactions, setTransactions] = useState([]);
-
-  useEffect(() => {
-    getTransactions().then(resp => {
-      setTransactions(resp.data);
-    });
-  }, []);
-
-  const getTransactions = () => {
-    return axios.get(`/api/transactions`);
-  };
 
   return (
     <AppContextProvider>
@@ -68,7 +55,7 @@ const App = () => {
                     <Route
                       path="/"
                       element={
-                        <Transactions transactions={transactions} />
+                        <Transactions />
                       }
                     />
                     <Route path="/fileUpload" element={<FileUpload />} />

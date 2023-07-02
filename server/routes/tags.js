@@ -8,6 +8,7 @@ Router.get("/api/tags", (req, res) => {
     `Select id, tag_name AS tagName FROM money_app.tags`,
     (err, results) => {
       if (!err) {
+        console.log('fetched tags')
         res.send(results);
       } else {
         console.log(err);
@@ -49,7 +50,7 @@ Router.post("/api/transactionTags/add", (req, res) => {
 });
 
 Router.delete("/api/transactionTags/delete", (req, res) => {
-  const { transId, tagIds, account } = req.body;
+  const { transId, tagIds } = req.body;
   tagIds.forEach(tagId => {
     mysqlConnection.query(
       `DELETE from transaction_tags

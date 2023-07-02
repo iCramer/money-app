@@ -13,24 +13,23 @@ const filterTypes = {
   date: 'date-range',
   type: 'array',
   account: 'array',
-  tags: 'array'
+  tags: 'array',
+  categories: 'array',
 };
 
-const Filters = ({ onFilterChange }) => {
+const Filters = ({ onFilterChange, getCategories }) => {
   const [filterValues, setFilterValues] = useState(new Map());
   const [firstDateChange, setFirstDateChange] = useState(true);
-  const { tagList } = useContext(AppContext);
+  const { tagList, categoriesList } = useContext(AppContext);
   const [tags, setTags] = tagList;
+  const [categories] = categoriesList;
 
   useEffect(() => {
-    getTags().then(resp => {
+    axios.get(`/api/tags`).then(resp => {
       setTags(resp.data);
     });
+    getCategories();
   }, []);
-
-  const getTags = () => {
-    return axios.get(`/api/tags`);
-  };
  
   const onValueChange = (field, value) => {
     if (field === 'date' && firstDateChange) {
@@ -95,14 +94,23 @@ const Filters = ({ onFilterChange }) => {
             ]}
           />
         </Grid>
-        <Grid item xs={3}>
-        <CheckboxList
-            title="Tag"
-            onChange={selected => onValueChange('tags', selected)}
-            selected={filterValues.get('tags') || new Set()}
-            items={tags}
-            itemKey="tagName"
-          />
+        <Grid item xs={2}>
+          <CheckboxList
+              title="Tag"
+              onChange={selected => onValueChange('tags', selected)}
+              selected={filterValues.get('tags') || new Set()}
+              items={tags}
+              itemKey="tagName"
+            />
+        </Grid>
+        <Grid item xs={2}>
+          <CheckboxList
+              title="Category"
+              onChange={selected => onValueChange('categories', selected)}
+              selected={filterValues.get('categories') || new Set()}
+              items={categories}
+              itemKey="label"
+            />
         </Grid>
         <Grid item xs={12} className="filter-submit-btn">
           <Button onClick={handleSubmit}>Set Filters</Button>

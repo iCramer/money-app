@@ -1,33 +1,25 @@
-import React, { useState, useRef, useContext, useCallback } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import axios from 'axios';
 import Chip from '@mui/material/Chip';
-import Input from '../Input';
 import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
+
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { TagEditorStyles, TagEditorGlobalStyles } from './TagEditor.styles';
 import Popper from '@mui/material/Popper';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
 import TagList from './TagList';
-
 import { AppContext } from '../../AppContext';
 
-const TagEditor = ({ row }) => {
+const TagEditor = ({ row, openModal }) => {
   const { tagList } = useContext(AppContext);
-  const [tags, setTags] = tagList;
+  const [tags] = tagList;
   const existingTags = row.tags;
   const [currentTags, setCurrentTags] = useState([...existingTags]);
   const [showPopper, setShowPopper] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [tagInputVal, setTagInputVal] = useState('');
   const anchorEl = useRef(null);
 
-  const changeCheck = useCallback(evt => {
+  const changeCheck = evt => {
       const { value, checked } = evt.target;
 
       if (!checked) {
@@ -39,11 +31,11 @@ const TagEditor = ({ row }) => {
       else {
         setCurrentTags([...currentTags, value]);
       }
-  }, []);
+  };
 
-  const onClickAway = useCallback(() => {
+  const onClickAway = () => {
     setShowPopper(false);
-  }, []);
+  };
 
   const updateTags = () => {
     const newTagIds = currentTags.reduce((acc, item) => {
@@ -85,30 +77,6 @@ const TagEditor = ({ row }) => {
     setCurrentTags([...existingTags]);
     setShowPopper(false);
   };
-
-  const handleModalClose = () => {
-    setModalOpen(false);
-    setTagInputVal('');
-  };
-
-  const addNewTag = () => {
-    if (tagInputVal !== '') {
-      axios.post('/api/tags/add', { tagName: tagInputVal}).then(() => {
-        handleModalClose();
-        getTags();
-      });
-    }
-  };
-
-  const getTags = () => {
-    return axios.get(`/api/tags`).then(resp => {
-      setTags(resp.data);
-    });
-  };
-
-  const openModal = useCallback(() => {
-    setModalOpen(true);
-  }, []);
 
   return (
     <>
@@ -159,23 +127,6 @@ const TagEditor = ({ row }) => {
             openModal={openModal}
           />
         </Popper>
-         
-        <Dialog open={modalOpen} onClose={handleModalClose}>
-            <DialogTitle>Add New Tag</DialogTitle>
-            <DialogContent>
-              <Input
-                label="Tag Name"
-                value={tagInputVal}
-                onChange={evt => setTagInputVal(evt.target.value)}
-                autoFocus
-                fullWidth
-              />
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleModalClose}>Cancel</Button>
-                <Button onClick={addNewTag} variant="primary">Submit</Button>
-            </DialogActions>
-        </Dialog>
       </TagEditorStyles>
     </>
   );

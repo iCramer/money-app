@@ -1,43 +1,59 @@
 /* eslint-disable no-loop-func */
-import { useEffect, useState, useContext, useCallback } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { TransactionsWrapper } from "./Transactions.styles";
 import Box from '../../components/Box';
 import Filters from '../../components/Filters';
 import axios from 'axios';
 import TagEditor from '../../components/TagEditor';
-import CategoryEditor from '../../components/CategoryEditor';
+import CategoryCell from '../../components/CategoryCell';
 import { AppContext } from '../../AppContext';
 import MemoDataGrid from "../../components/MemoDataGrid";
+import CategoryModal from '../../components/CategoryModal';
+import TagModal from '../../components/TagModal';
 
-const Transactions = ({ transactions }) => {
-    const { tagList, categoriesList, calculatedTotals } = useContext(AppContext);
-    // const [transactions, setTransactions] = transactionsList;
+const Transactions = () => {
+    const { categoriesList, calculatedTotals, transactionsList } = useContext(AppContext);
+    const [transactions, setTransactions] = transactionsList;
     const [categories, setCategories] = categoriesList;
     const [selectedRows, setSelectedRows] = useState([]);
     const [filteredTransactions, setFilteredTrasactions] = useState([]);
     const [totals, setTotals] = calculatedTotals;
+    const [tagModalOpen, setTagModalOpen] = useState(false);
+    const [categoryModalOpen, setCategoryModalOpen] = useState(false);
+    const [categoryEditId, setCategoryEditId] = useState('');
 
     useEffect(() => {
-        setFilteredTrasactions(transactions)
+        setFilteredTrasactions(transactions);
     }, [transactions]);
 
-    useEffect(() => {
-        getCategories().then(resp => {
-            formatCategories(resp.data);
-        });
-    }, []);
+    // const formatCategories = catData => {
+    //     return catData.reduce((grouped, category) => {
+    //         if (grouped[category.label]) {
+    //             grouped[category.label].push(category.name);
+    //         }
+    //         else {
+    //             grouped[category.label] = [category.name];
+    //         }
+
+    //         return grouped;
+    //     }, {});
+    // };
+
+    const getTransactions = () => {
+        return axios.get(`/api/transactions`);
+    };
 
     const getCategories = () => {
-        return axios.get(`/api/categories`);
+        axios.get(`/api/categories`).then(resp => {
+            setCategories(resp.data);
+        });
     };
 
-    const formatCategories = catData => {
-        const catMap = new Map();
-        catData.forEach(item => {
-            catMap.set(item.name, item.label);
+    useEffect(() => {
+        getTransactions().then(resp => {
+            setTransactions(resp.data);
         });
-        setCategories(catMap);
-    };
+    }, []);
 
     const getTransTotal = () => {
         const total = { credit: 0, debit: 0, saved: '' };
@@ -58,27 +74,46 @@ const Transactions = ({ transactions }) => {
     };
 
     const onCatEditSubmit = useCallback(() => {
-        // getCategories().then(resp => {
-        //     formatCategories(resp.data);
-        // });
+        setCategoryModalOpen(false);
+        getTransactions().then(resp => {
+            setTransactions(resp.data);
+        });
+        getCategories();
     }, []);
 
     useEffect(() => {
         getTransTotal();
-    }, [selectedRows])
+    }, [selectedRows]);
 
     const filterRows = filters => {
+        if (Object.keys(filters).length === 0) {
+            console.log('clear')
+            setFilteredTrasactions(transactions);
+            return;
+        }
+
         const filteredTrans = transactions.filter(row => {
             let fields = Object.keys(filters);
-            let match = true;
             let filterCount = fields.length;
+            let match = true;
+
             while(match && filterCount > 0) {
                 fields.forEach(field => {
                     const filter = filters[field];
-                    if (filter.dataType === 'array') {
+                    if (field === 'categories') {
+                        if (!Array.from(filter.value).includes(row.category)) {
+                            match = false;
+                        }
+                    }
+                    else if (filter.dataType === 'array' && Array.isArray(row[field])) {
+                        if (!Array.from(filter.value).some(x => row[field].includes(x))) {
+                            match = false;
+                        }
+                    }
+                    else if (filter.dataType === 'array') {
                         if (!Array.from(filter.value).some(x => row[field] === x)) {
                             match = false;
-                        };
+                        }
                     }
                     else if (filter.dataType === 'date-range') {
                         const itemDate = new Date(row[field]).getTime();
@@ -92,14 +127,6 @@ const Transactions = ({ transactions }) => {
             return match;
         });
         setFilteredTrasactions(filteredTrans);
-    };
-
-    const getCategory = data => {
-        const desc = data.row.description;
-        if (categories?.has(desc)) {
-            return categories.get(desc);
-        }
-        return '';
     };
 
     const columns = [
@@ -128,7 +155,7 @@ const Transactions = ({ transactions }) => {
             flex: 2,
             cellClassName: 'tag-cell',
             renderCell: trans => (
-                <TagEditor row={trans.row} />
+                <TagEditor row={trans.row} openModal={() => setTagModalOpen(true)} />
             )
         },
         {
@@ -136,22 +163,25 @@ const Transactions = ({ transactions }) => {
             headerName: 'Category',
             cellClassName: 'category-cell',
             flex: 2,
-            valueGetter: getCategory,
             renderCell: trans => (
-                <CategoryEditor
-                    category={trans}
-                    onEditSubmit={onCatEditSubmit}
-                    categories={categories}
+                <CategoryCell
+                    transaction={trans.row}
+                    openModal={openCategoryModal}
                 />
             )
         }
     ];
 
+    const openCategoryModal = trans => {
+        setCategoryEditId(trans.description);
+        setCategoryModalOpen(true);
+    };
+
     return (
         <TransactionsWrapper>
             <h2 className="page-title">Transactions</h2>
             <Box>
-                <Filters onFilterChange={filters => filterRows(filters)} />
+                <Filters onFilterChange={filterRows} getCategories={getCategories} />
             </Box>
             <div className='totals'>
                 <p>
@@ -170,8 +200,17 @@ const Transactions = ({ transactions }) => {
                 selectionModel={selectedRows}
                 disableColumnMenu
             />
+
+            <TagModal open={tagModalOpen} handleModalClose={() => setTagModalOpen(false)} />
+
+            <CategoryModal
+                onEditSubmit={onCatEditSubmit}
+                categoryId={categoryEditId}
+                open={categoryModalOpen}
+                onCancel={() => setCategoryModalOpen(false)}
+            />
         </TransactionsWrapper>
     )
 }
 
-export default Transactions;
+export default React.memo(Transactions);

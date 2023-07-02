@@ -1,7 +1,8 @@
+import { forwardRef } from 'react';
 import TextField from '@mui/material/TextField';
 import { InputStyles } from './Input.styles';
 
-const Input = ({label, value, onChange, variant = 'outlined', autoFocus = false, fullWidth = false}) => (
+const Input = ({label, value, onChange, variant = 'outlined', autoFocus = false, fullWidth = false, ref}) => (
   <InputStyles>
     <TextField
       label={label}
@@ -10,8 +11,9 @@ const Input = ({label, value, onChange, variant = 'outlined', autoFocus = false,
       onChange={onChange}
       fullWidth={fullWidth}
       autoFocus={autoFocus}
+      inputRef={ref}
     />
   </InputStyles>
 );
 
-export default Input;
+export default forwardRef(Input);
