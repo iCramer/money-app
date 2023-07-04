@@ -74,7 +74,6 @@ const Transactions = () => {
 
     const filterRows = filters => {
         if (Object.keys(filters).length === 0) {
-            console.log('clear')
             setFilteredTrasactions(transactions);
             return;
         }
@@ -149,7 +148,7 @@ const Transactions = () => {
             field: 'category',
             headerName: 'Category',
             cellClassName: 'category-cell',
-            flex: 2,
+            flex: 3,
             renderCell: trans => (
                 <CategoryCell
                     transaction={trans.row}

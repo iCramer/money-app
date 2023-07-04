@@ -35,12 +35,12 @@ const App = () => {
                 </div>
                 <ul>
                   <li>
-                    <NavLink to="/" activeClassName="active">
+                    <NavLink to="/" className={({isActive}) => (isActive ? 'active' : null)}>
                       <PaymentIcon />
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to="/fileUpload" activeClassName="active">
+                    <NavLink to="/fileUpload" className={({isActive}) => (isActive ? 'active' : null)}>
                       <BackupIcon />
                     </NavLink>
                   </li>

@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import TextField from '@mui/material/TextField';
 import { InputStyles } from './Input.styles';
 
-const Input = ({label, value, onChange, variant = 'outlined', autoFocus = false, fullWidth = false, ref}) => (
+const Input = ({label, value, onChange, variant = 'outlined', autoFocus = false, fullWidth = false}, ref) => (
   <InputStyles>
     <TextField
       label={label}

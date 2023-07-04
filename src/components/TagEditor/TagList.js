@@ -24,7 +24,7 @@ const TagList = ({ tags, onClickAway, currentTags, changeCheck, openModal }) => 
                 <ListItemText primary={tag.tagName} />
             </MenuItem>
           ))}
-          <MenuItem>
+          <MenuItem className="new-tag-btn">
             <Button onClick={openModal}>
               <AddCircleOutlineOutlinedIcon fontSize="small" />
               Add New Tag

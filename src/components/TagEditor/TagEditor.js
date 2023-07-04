@@ -7,7 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { TagEditorStyles, TagEditorGlobalStyles } from './TagEditor.styles';
-import Popper from '@mui/material/Popper';
+import Popover from '@mui/material/Popover';
 import TagList from './TagList';
 import { AppContext } from '../../AppContext';
 
@@ -106,18 +106,13 @@ const TagEditor = ({ row, openModal }) => {
             )}
           </div>
         </div>
-        <Popper
+        <Popover
           open={showPopper}
           anchorEl={anchorEl.current}
-          placement="bottom-start"
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            zIndex: 1
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
           }}
-          transition
-          disablePortal
         >
           <TagList
             tags={tags}
@@ -126,7 +121,7 @@ const TagEditor = ({ row, openModal }) => {
             changeCheck={changeCheck}
             openModal={openModal}
           />
-        </Popper>
+        </Popover>
       </TagEditorStyles>
     </>
   );

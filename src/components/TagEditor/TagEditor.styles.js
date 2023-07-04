@@ -15,6 +15,16 @@ export const TagEditorGlobalStyles = createGlobalStyle`
 
     .MuiMenuItem-root {
       padding: 2px 5px;
+
+      &.new-tag-btn {
+        border-top: 1px solid #dcdcdc;
+        margin-top: 5px;
+        padding-top: 5px;
+
+        button {
+          width: 100%;
+        }
+      }
     }
   }
 `;

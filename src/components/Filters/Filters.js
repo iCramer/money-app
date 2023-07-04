@@ -54,12 +54,13 @@ const Filters = ({ onFilterChange, getCategories }) => {
       };
       return acc;
     }, {});
+
     onFilterChange(filterReturn);
   };
   
   const clearFilters = () => {
     setFilterValues(new Map());
-    handleSubmit();
+    onFilterChange({});
   };
 
 
