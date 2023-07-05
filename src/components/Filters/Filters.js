@@ -90,8 +90,8 @@ const Filters = ({ onFilterChange, getCategories }) => {
             onChange={selected => onValueChange('type', selected)}
             selected={filterValues.get('type') || new Set()}
             items={[
-              {name: 'debit', label: 'Spent'},
-              {name: 'credit', label: 'Deposited'}
+              {name: 'spend', label: 'Spend'},
+              {name: 'deposit', label: 'Deposit'}
             ]}
           />
         </Grid>

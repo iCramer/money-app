@@ -4,8 +4,8 @@ export const ButtonStyles = styled.div`
   button {
     display: flex;
     align-items: center;
-    font-size: 14px;
-    padding: 12px 16px;
+    font-size: ${({ size }) => size === 'small' ? '12px' : '14px' };
+    padding: ${({ size }) => size === 'small' ? '6px 12px' : '12px 16px' };
     border: none;
     border-radius: 4px;
     transition: background-color 250ms cubic-bezier(0.4,0,0.2,1) 0ms,

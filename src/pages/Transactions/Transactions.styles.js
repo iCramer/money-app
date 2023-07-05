@@ -48,28 +48,28 @@ export const TransactionsWrapper = styled.div`
 
       &.tag-cell {
         overflow: visible;
-      }
-
-      .tag-edit-btn,
-        .cat-edit-btn {
-            display: none;
-          }
+        display: flex;
+        position: relative;
+        width: 100%;
 
         &:hover {
-          .tag-edit-btn,
-          .cat-edit-btn {
-            display: block;
+          .edit-overlay {
+            visibility: visible;
           }
         }
+      }
     }
   }
   
   .category-cell {
     display: flex;
     width: 100%;
-    
-    button {
-      margin-left: auto;
+    position: relative;
+
+    &:hover {
+      .edit-overlay {
+        visibility: visible;
+      }
     }
   }
 `;

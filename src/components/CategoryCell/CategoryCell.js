@@ -1,12 +1,10 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import axios from 'axios';
 import { CategoryCellStyles, CategoryEditorGlobalStyles } from './CategoryCell.styles';
 import Chip from '@mui/material/Chip';
-import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
 import ListItemText from '@mui/material/ListItemText';
-import Button from '@mui/material/Button';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import Button from '../Button';
+import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import MenuList from '@mui/material/MenuList';
@@ -38,10 +36,12 @@ const CategoryCell = ({ transaction, openModal, onEditSubmit }) => {
       {transaction?.category && (
           <Chip label={transaction.category} size="small" />
       )}
-      
-      <IconButton size="small" onClick={() => setEditMode(true)} className="cat-edit-btn">
-          <EditIcon fontSize="small" />
-      </IconButton>
+
+      <div className="edit-overlay">
+        <Button size="small" onClick={() => setEditMode(true)}>
+          Edit Category
+        </Button>
+      </div>
 
       <CategoryEditorGlobalStyles />
       {editMode && (
@@ -56,13 +56,12 @@ const CategoryCell = ({ transaction, openModal, onEditSubmit }) => {
           <Paper>
             <ClickAwayListener onClickAway={onClickAway}>
               <MenuList>
-                <MenuItem value=''>Select Category</MenuItem>
                 {categories?.map(category => (
                   <MenuItem onClick={() => updateCategory(category)} key={category.id}>{category.label}</MenuItem>
                 ))}
-                <MenuItem className="new-tag-btn">
-                  <Button onClick={() => openModal(transaction)}>
-                    <AddCircleOutlineOutlinedIcon fontSize="small" />
+                <MenuItem className="new-category-btn">
+                  <Button onClick={() => openModal(transaction)} size="small" variant="text">
+                    <CreateNewFolderOutlinedIcon size="sm" />
                     Add New Category
                   </Button>
                 </MenuItem>

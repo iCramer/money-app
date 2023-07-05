@@ -3,7 +3,7 @@ const mysqlConnection = require("../utils/database");
 
 const Router = express.Router();
 
-const transactionsQuery = `SELECT
+const getTransactionsQuery = conditions => `SELECT
 b.id,
 b.account,
 DATE_FORMAT(b.date, "%Y-%m-%d") AS date,
@@ -22,12 +22,21 @@ LEFT JOIN money_app.transaction_tags tt
 ON b.id = tt.transaction_id
 LEFT JOIN money_app.tags t
 ON t.id = tt.tag_id
+${conditions}
 GROUP BY b.id, c.label
 ORDER BY b.date DESC`;
 
 Router.get("/api/transactions", (req, res) => {
+  const { query } = req;
+  let queryConditions = '';
+  if (query.fromDate && query.toDate) {
+    queryConditions += `WHERE b.date BETWEEN '${query.fromDate}' AND '${query.toDate}'`;
+  }
+
+  const queryString = getTransactionsQuery(queryConditions);
+
   mysqlConnection.query(
-    transactionsQuery,
+    queryString,
     (err, results) => {
       if (!err) {
         const resp = results.map(item => {
@@ -37,6 +46,7 @@ Router.get("/api/transactions", (req, res) => {
           else {
             item.tags = [];
           }
+
           return item;
         });
         console.log('fetched transations')

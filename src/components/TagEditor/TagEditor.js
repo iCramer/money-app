@@ -2,6 +2,8 @@ import React, { useState, useRef, useContext } from 'react';
 import axios from 'axios';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import Button from '../Button';
 
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
@@ -45,6 +47,7 @@ const TagEditor = ({ row, openModal }) => {
       }
       return acc;
     }, []);
+    console.log(newTagIds)
 
     if (newTagIds.length) {
       axios.post('/api/transactionTags/add', {
@@ -81,7 +84,7 @@ const TagEditor = ({ row, openModal }) => {
   return (
     <>
       <TagEditorGlobalStyles />
-      <TagEditorStyles ref={anchorEl}>
+      <TagEditorStyles>
         <div className="tag-container">
           <div className="tags">
             {currentTags?.map(tag => (
@@ -89,21 +92,11 @@ const TagEditor = ({ row, openModal }) => {
             ))}
           </div>
           <div className="tag-actions">
-            {!showPopper && (
-              <IconButton size="small" onClick={() => setShowPopper(true)} className="tag-edit-btn">
-                  <EditIcon fontSize="small" />
-              </IconButton>
-            )}
-            {showPopper && (
-              <>
-                <IconButton size="small" onClick={updateTags}>
-                    <CheckIcon fontSize="small" />
-                </IconButton>
-                <IconButton size="small" onClick={cancelEdit}>
-                    <CloseIcon fontSize="small" />
-                </IconButton>
-              </>
-            )}
+            <div className="edit-overlay" ref={anchorEl}>
+              <Button size="small" onClick={() => setShowPopper(true)}>
+                Edit Tags
+              </Button>
+            </div>
           </div>
         </div>
         <Popover
@@ -114,13 +107,23 @@ const TagEditor = ({ row, openModal }) => {
             horizontal: 'left',
           }}
         >
-          <TagList
-            tags={tags}
-            onClickAway={onClickAway}
-            currentTags={currentTags}
-            changeCheck={changeCheck}
-            openModal={openModal}
-          />
+          <Paper>
+            <div className="edit-btn-group">
+              <Button variant="text" size="small" onClick={cancelEdit}>
+                  Cancel
+              </Button>
+              <Button size="small" onClick={updateTags}>
+                  Done
+              </Button>
+            </div>
+            <TagList
+              tags={tags}
+              onClickAway={onClickAway}
+              currentTags={currentTags}
+              changeCheck={changeCheck}
+              openModal={openModal}
+            />
+          </Paper>
         </Popover>
       </TagEditorStyles>
     </>

@@ -4,12 +4,15 @@ import { TransactionsWrapper } from "./Transactions.styles";
 import Box from '../../components/Box';
 import Filters from '../../components/Filters';
 import axios from 'axios';
+import MenuItem from '@mui/material/MenuItem';
 import TagEditor from '../../components/TagEditor';
 import CategoryCell from '../../components/CategoryCell';
 import { AppContext } from '../../AppContext';
 import MemoDataGrid from "../../components/MemoDataGrid";
 import CategoryModal from '../../components/CategoryModal';
 import TagModal from '../../components/TagModal';
+import SelectInput from "../../components/SelectInput";
+import { MONTH_LENGTHS, MONTH_NUMBERS } from "../../constants";
 
 const Transactions = () => {
     const { categoriesList, calculatedTotals, transactionsList } = useContext(AppContext);
@@ -21,13 +24,21 @@ const Transactions = () => {
     const [tagModalOpen, setTagModalOpen] = useState(false);
     const [categoryModalOpen, setCategoryModalOpen] = useState(false);
     const [categoryEditId, setCategoryEditId] = useState('');
+    const [monthFilter, setMonthFilter] = useState('');
 
     useEffect(() => {
         setFilteredTrasactions(transactions);
     }, [transactions]);
 
     const getTransactions = () => {
-        return axios.get(`/api/transactions`);
+        let query = '';
+        if (monthFilter) {
+            const [month, year] = monthFilter.split('-');
+            const monthEnd = MONTH_LENGTHS[month];
+            const monthNum = MONTH_NUMBERS[month];
+            query += `fromDate=${year}-${monthNum}-01&toDate=${year}-${monthNum}-${monthEnd}`;
+        }
+        return axios.get(`/api/transactions?${query}`);
     };
 
     const getCategories = () => {
@@ -40,22 +51,22 @@ const Transactions = () => {
         getTransactions().then(resp => {
             setTransactions(resp.data);
         });
-    }, []);
+    }, [monthFilter]);
 
     const getTransTotal = () => {
-        const total = { credit: 0, debit: 0, saved: '' };
+        const total = { deposit: 0, spend: 0, saved: '' };
         selectedRows.forEach(row => {
             const item = filteredTransactions.find(x => x.id === row);
-            if (item?.type === 'debit' && !item?.description.includes('360 Performance')) {
-                total.debit += Math.abs(+item.amount);
+            if (item?.type === 'spend' && !item?.description.includes('360 Performance')) {
+                total.spend += Math.abs(+item.amount);
             }
-            else if (item?.type === 'credit') {
-                total.credit += Math.abs(+item.amount);
+            else if (item?.type === 'deposit') {
+                total.deposit += Math.abs(+item.amount);
             }
         });
-        total.saved = (total.credit - total.debit).toLocaleString('en-US', {maximumFractionDigits: 2});
-        total.credit = total.credit.toLocaleString('en-US', {maximumFractionDigits: 2});
-        total.debit = total.debit.toLocaleString('en-US', {maximumFractionDigits: 2});
+        total.saved = (total.deposit - total.spend).toLocaleString('en-US', {maximumFractionDigits: 2});
+        total.deposit = total.deposit.toLocaleString('en-US', {maximumFractionDigits: 2});
+        total.spend = total.spend.toLocaleString('en-US', {maximumFractionDigits: 2});
 
         setTotals(total);
     };
@@ -172,11 +183,19 @@ const Transactions = () => {
             </Box>
             <div className='totals'>
                 <p>
-                    <span><strong>Money Out:</strong> ${totals.debit}</span>
-                    <span><strong>Money In:</strong> ${totals.credit}</span>
-                    <span><strong>Total Saved:</strong> ${totals.saved}</span>
+                    <span><strong>Total:</strong> ${totals.spend}</span>
+                    {/* <span><strong>Money In:</strong> ${totals.deposit}</span>
+                    <span><strong>Total Saved:</strong> ${totals.saved}</span> */}
                 </p>
             </div>
+            <SelectInput
+                label="Month"
+                value={monthFilter}
+                width="200px"
+                onChange={evt => setMonthFilter(evt.target.value)
+            }>
+                <MenuItem value="june-2023">June 2023</MenuItem>
+            </SelectInput>
             <MemoDataGrid
                 rows={filteredTransactions}
                 columns={columns}

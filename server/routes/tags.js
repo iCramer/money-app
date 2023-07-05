@@ -54,7 +54,7 @@ Router.delete("/api/transactionTags/delete", (req, res) => {
   tagIds.forEach(tagId => {
     mysqlConnection.query(
       `DELETE from transaction_tags
-        WHERE id = ${tagId}
+        WHERE tag_id = ${tagId}
         AND transaction_id = ${transId}`,
       (err, results) => {
         if (!err) {

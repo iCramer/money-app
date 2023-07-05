@@ -5,7 +5,7 @@ const AppContext = createContext({});
 const AppContextProvider = ({ children, tagList, categoriesList }) => {
   const [tags, setTags] = useState(tagList || []);
   const [transactions, setTransactions] = useState([]);
-  const [totals, setTotals] = useState({ credit: '', debit: '', saved: ''  });
+  const [totals, setTotals] = useState({ deposit: '', spend: '', saved: ''  });
   const [categories, setCategories] = useState(categoriesList || new Map());
 
   return (

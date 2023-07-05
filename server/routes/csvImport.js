@@ -10,11 +10,11 @@ const normalizeData = data => {
   const description = data['Transaction Description'] || data['Description'];
     const amount = data['Transaction Amount'] || data['Amount'];
     let type = data['Transaction Type'] || data['Type'];
-    if (type === 'Sale') {
-      type = 'debit'
+    if (type === 'Sale' || type === 'Debit') {
+      type = 'spend'
     }
-    else if (type === 'Payment' || type === 'Return') {
-      type = 'credit'
+    else if (type === 'Payment' || type === 'Return' || type === 'Credit' || type === 'Adjustment') {
+      type = 'deposit'
     }
     let date = data['Transaction Date'];
     const [month, day, year] = date.split('/');

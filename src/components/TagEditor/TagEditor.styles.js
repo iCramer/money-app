@@ -8,30 +8,44 @@ export const TagEditorGlobalStyles = createGlobalStyle`
     width: 100%;
   }
 
+  .edit-btn-group {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #dcdcdc;
+  }
+
   .MuiList-root {
     min-width: 200px;
     display: flex;
     flex-direction: column;
 
     .MuiMenuItem-root {
-      padding: 2px 5px;
-
-      &.new-tag-btn {
-        border-top: 1px solid #dcdcdc;
-        margin-top: 5px;
-        padding-top: 5px;
-
-        button {
-          width: 100%;
-        }
-      }
+      padding: 3px 10px;
     }
   }
 `;
 
 export const TagEditorStyles = styled.div`
-  position: relative;
   width: 100%;
+
+  .done-overlay, .edit-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(234 234 234 / 66%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+  }
+
+  .edit-overlay {
+    visibility: hidden;
+  }
 
   .tag-container {
     display: flex;
