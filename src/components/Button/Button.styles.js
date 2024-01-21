@@ -20,10 +20,42 @@ export const ButtonStyles = styled.div`
     margin-right: 5px;
   }
 
+  &.pill {
+    button {
+      border-radius: 20px;
+    }
+  }
+
   &.primary {
     button {
       color: #fff;
       background-color: #1976d2;
+      box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+    }
+  }
+
+  &.primary-outline {
+    button {
+      color: #1976d2;
+      background-color: #fff;
+      border: 1px solid #1976d2;
+      box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+    }
+  }
+
+  &.success-outline {
+    button {
+      color: #2e7d32;
+      background-color: #fff;
+      border: 1px solid #2e7d32;
+      box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+    }
+  }
+
+  &.success {
+    button {
+      color: #fff;
+      background-color: #2e7d32;
       box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
     }
   }

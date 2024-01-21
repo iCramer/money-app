@@ -1,13 +1,8 @@
 import React, { useState, useRef, useContext } from 'react';
 import axios from 'axios';
 import Chip from '@mui/material/Chip';
-import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Button from '../Button';
-
-import EditIcon from '@mui/icons-material/Edit';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
 import { TagEditorStyles, TagEditorGlobalStyles } from './TagEditor.styles';
 import Popover from '@mui/material/Popover';
 import TagList from './TagList';
@@ -47,7 +42,6 @@ const TagEditor = ({ row, openModal }) => {
       }
       return acc;
     }, []);
-    console.log(newTagIds)
 
     if (newTagIds.length) {
       axios.post('/api/transactionTags/add', {

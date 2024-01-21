@@ -4,8 +4,12 @@ export const TransactionsWrapper = styled.div`
   width: 100%;
 
   .totals {
-    span {
-      margin-right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .month-select {
+      margin-left: auto;
     }
   }
 

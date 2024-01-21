@@ -16,7 +16,9 @@ const CheckboxList = ({ title, onChange, children, items, selected, itemKey = 'n
 
   return (
     <CheckboxListStyles>
-      <label>{title}</label>
+      {title && (
+        <label>{title}</label>
+      )}
       {!children && items?.length ? (
         <div className="check-list">
           {items.map(item => (

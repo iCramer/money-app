@@ -1,16 +1,37 @@
 import styled from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
+import Badge from '@mui/material/Badge';
+
+export const TagEditorGlobalStyles = createGlobalStyle`
+  .MuiPaper-root {
+    .check-list {
+      padding: 8px 15px;
+
+      & > div {
+        margin: 8px 0;
+      }
+    }
+  }
+`;
+
+export const StyledBadge = styled(Badge)`
+  .MuiBadge-badge {
+    background-color: #fff;
+    color: #2e7d32;
+  }
+`;
 
 export const FiltersWrapper = styled.div`
+  .filters {
+    display: flex;
+    gap: 10px;
+  }
+
   .filter-submit-btn {
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    button {
-      margin: 10px auto;
-      display: block;
-    }
+    margin-top: 25px;
   }
 
   h3 {

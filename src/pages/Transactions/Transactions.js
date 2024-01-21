@@ -1,5 +1,5 @@
 /* eslint-disable no-loop-func */
-import React, { useEffect, useState, useContext, useCallback } from "react";
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { TransactionsWrapper } from "./Transactions.styles";
 import Box from '../../components/Box';
 import Filters from '../../components/Filters';
@@ -11,7 +11,8 @@ import { AppContext } from '../../AppContext';
 import MemoDataGrid from "../../components/MemoDataGrid";
 import CategoryModal from '../../components/CategoryModal';
 import TagModal from '../../components/TagModal';
-import SelectInput from "../../components/SelectInput";
+import SelectInput from '../../components/SelectInput';
+import CurrentFilters from '../../components/CurrentFilters';
 import { MONTH_LENGTHS, MONTH_NUMBERS } from "../../constants";
 
 const Transactions = () => {
@@ -25,6 +26,7 @@ const Transactions = () => {
     const [categoryModalOpen, setCategoryModalOpen] = useState(false);
     const [categoryEditId, setCategoryEditId] = useState('');
     const [monthFilter, setMonthFilter] = useState('');
+    const [currentFilters, setCurrentFilters] = useState({});
 
     useEffect(() => {
         setFilteredTrasactions(transactions);
@@ -84,6 +86,7 @@ const Transactions = () => {
     }, [selectedRows]);
 
     const filterRows = filters => {
+        setCurrentFilters(filters);
         if (Object.keys(filters).length === 0) {
             setFilteredTrasactions(transactions);
             return;
@@ -183,19 +186,24 @@ const Transactions = () => {
             </Box>
             <div className='totals'>
                 <p>
-                    <span><strong>Total:</strong> ${totals.spend}</span>
+                    <span><strong>Selected Total:</strong> ${totals.spend}</span>
                     {/* <span><strong>Money In:</strong> ${totals.deposit}</span>
                     <span><strong>Total Saved:</strong> ${totals.saved}</span> */}
                 </p>
+                <CurrentFilters filters={currentFilters} />
+                <div className="month-select">
+                    <SelectInput
+                        label="Month"
+                        value={monthFilter}
+                        width="200px"
+                        marginLeft="auto"
+                        onChange={evt => setMonthFilter(evt.target.value)}
+                    >
+                        <MenuItem value="">All Transactions</MenuItem>
+                        <MenuItem value="june-2023">June 2023</MenuItem>
+                    </SelectInput>
+                </div>
             </div>
-            <SelectInput
-                label="Month"
-                value={monthFilter}
-                width="200px"
-                onChange={evt => setMonthFilter(evt.target.value)
-            }>
-                <MenuItem value="june-2023">June 2023</MenuItem>
-            </SelectInput>
             <MemoDataGrid
                 rows={filteredTransactions}
                 columns={columns}
