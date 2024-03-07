@@ -4,7 +4,7 @@ import { AppContext } from '../../AppContext';
 import { FiltersWrapper, TagEditorGlobalStyles, StyledBadge } from './Filters.styles';
 import CheckboxList from '../CheckboxList';
 import Button from '../Button';
-import DateRange from '../DateRange';
+// import DateRange from '../DateRange';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import Paper from '@mui/material/Paper';
@@ -110,7 +110,7 @@ const Filters = ({ onFilterChange, getCategories }) => {
         >
           <ClickAwayListener onClickAway={() => setOpenPopper('')}>
             <Paper>
-              <DateRange onDateChange={range => onValueChange('date', range) } />
+              {/* <DateRange onDateChange={range => onValueChange('date', range) } /> */}
             </Paper>
           </ClickAwayListener>
         </Popover>

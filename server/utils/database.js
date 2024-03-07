@@ -1,15 +1,17 @@
 const dbCreds = require('./dbCreds');
+const mysql = require("mysql2");
 
-const mysql = require("mysql");
+const pool = mysql.createPool(dbCreds);
 
-const mysqlConnection = mysql.createConnection(dbCreds);
+// const mysqlConnection = mysql.createConnection(dbCreds);
 
-mysqlConnection.connect((err) => {
-  if (!err) {
-    console.log("Connected");
-  } else {
-    console.log(err);
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error(err);
+    throw err
   }
+    console.log("Database connected");
+    connection.release();
 });
 
-module.exports = mysqlConnection;
+module.exports = pool;

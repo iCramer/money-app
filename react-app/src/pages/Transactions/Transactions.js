@@ -29,7 +29,7 @@ const Transactions = () => {
     const [currentFilters, setCurrentFilters] = useState({});
 
     useEffect(() => {
-        setFilteredTrasactions(transactions);
+        filterRows(currentFilters);
     }, [transactions]);
 
     const getTransactions = () => {
@@ -73,13 +73,19 @@ const Transactions = () => {
         setTotals(total);
     };
 
-    const onCatEditSubmit = useCallback(() => {
+    const onCatEditSubmit = (transDescription, category) => {
         setCategoryModalOpen(false);
-        getTransactions().then(resp => {
-            setTransactions(resp.data);
-        });
+        if(transDescription && category) {
+            const updatedTransactions = transactions.map(item => {
+                if (item.description === transDescription) {
+                    item.category = category;
+                }
+                return item;
+            });
+            setTransactions(updatedTransactions);
+        }
         getCategories();
-    }, []);
+    };
 
     useEffect(() => {
         getTransTotal();
@@ -187,8 +193,8 @@ const Transactions = () => {
             <div className='totals'>
                 <p>
                     <span><strong>Selected Total:</strong> ${totals.spend}</span>
-                    {/* <span><strong>Money In:</strong> ${totals.deposit}</span>
-                    <span><strong>Total Saved:</strong> ${totals.saved}</span> */}
+                    <span><strong>Money In:</strong> ${totals.deposit}</span>
+                    <span><strong>Total Saved:</strong> ${totals.saved}</span>
                 </p>
                 <CurrentFilters filters={currentFilters} />
                 <div className="month-select">
@@ -200,7 +206,12 @@ const Transactions = () => {
                         onChange={evt => setMonthFilter(evt.target.value)}
                     >
                         <MenuItem value="">All Transactions</MenuItem>
-                        <MenuItem value="june-2023">June 2023</MenuItem>
+                        <MenuItem value="july-2023">July 2023</MenuItem>
+                        <MenuItem value="august-2023">August 2023</MenuItem>
+                        <MenuItem value="september-2023">September 2023</MenuItem>
+                        <MenuItem value="october-2023">October 2023</MenuItem>
+                        <MenuItem value="november-2023">November 2023</MenuItem>
+                        <MenuItem value="december-2023">December 2023</MenuItem>
                     </SelectInput>
                 </div>
             </div>

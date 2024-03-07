@@ -2,7 +2,6 @@ import React, { useState, useContext, useRef } from 'react';
 import axios from 'axios';
 import { CategoryCellStyles, CategoryEditorGlobalStyles } from './CategoryCell.styles';
 import Chip from '@mui/material/Chip';
-import ListItemText from '@mui/material/ListItemText';
 import Button from '../Button';
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import MenuItem from '@mui/material/MenuItem';
@@ -22,7 +21,7 @@ const CategoryCell = ({ transaction, openModal, onEditSubmit }) => {
     setEditMode(false);
     axios.post('api/transactionCategories/add', {transDesc: transaction.description, categoryId: category.id})
     .then(() => {
-        onEditSubmit();
+        onEditSubmit(transaction.description, category.label);
         setEditMode(false);
     });
   };
