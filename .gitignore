@@ -3,7 +3,8 @@
 # dependencies
 /node_modules
 /server/node_modules
-/src/node_modules
+/react-app/node_modules
+
 /.pnp
 .pnp.js
 
@@ -21,6 +22,7 @@
 .env.production.local
 /server/utils/dbCreds.js
 /server/data
+/mysqlData
 
 npm-debug.log*
 yarn-debug.log*

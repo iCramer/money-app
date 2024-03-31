@@ -2,24 +2,25 @@ version: '4.27.2'
 services:
   mysql_db:
     container_name: mysql_db
-    image: mysql:8.2.0
+    image: mysql:8.3.0
     command: --default-authentication-plugin=mysql_native_password
     restart: unless-stopped
     volumes: 
       - ./dbInit.sql:/docker-entrypoint-initdb.d/0_init.sql
+      - ./mysqlData:/var/lib/mysql
     ports:
       - 3306:3306
     expose: 
       - 3306
     environment:
       MYSQL_DATABASE: money_app
-      MYSQL_ROOT_PASSWORD: stoopidhead
+      MYSQL_ROOT_PASSWORD: iC141538*
     networks:
       - internalnet
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-pstoopidhead"]
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-piC141538*"]
       interval: 1s
-      retries: 12
+      retries: 120
 
   node_api:
     container_name: node_api
@@ -28,10 +29,9 @@ services:
     ports: 
       - "3001:3001"
     environment:
-      WAIT_HOSTS: mysql_db:3306
       EXTERNAL_PORT: 3001
       MYSQLUSER: root
-      MYSQLPASSWORD: stoopidhead
+      MYSQLPASSWORD: iC141538*
       MYSQLDB: money_app
       MYSQLHOST: mysql_db
     depends_on:

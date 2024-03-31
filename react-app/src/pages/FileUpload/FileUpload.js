@@ -12,16 +12,23 @@ import Slide from '@mui/material/Slide';
 import Alert from '@mui/material/Alert';
 
 const FileUpload = () => {
-    const [fileName, setFileName] = useState('');
+    const [csvFile, setCsvFile] = useState();
     const [account, setAccount] = useState('');
     const [alert, setAlert] = useState({ open: false, type: '', msg: '' });
 
-    const onFileChange = evt => {
-        setFileName(evt.target.files[0].name);
+    const onFileChange = (evt) => {
+        if (!evt.target.files?.length) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', evt.target.files[0]);
+        setCsvFile(formData);
     };
 
     const uploadFile = () => {
-        axios.post('/api/import', { fileName, account }).then(resp => {
+        csvFile.append('account', account);
+        axios.post('/api/import', csvFile).then(resp => {
             if (resp.data === 'Success') {
                 setAlert({ open: true, type: 'success', msg: 'Data Uploaded Successfully'});
             }
@@ -29,7 +36,7 @@ const FileUpload = () => {
                 setAlert({ open: true, type: 'error', msg: 'Error Uploading Data'});
             }
             setAccount('');
-            setFileName('');
+            setCsvFile(null);
         });
     };
 
@@ -59,7 +66,7 @@ const FileUpload = () => {
                         accept="cvs"
                         onChange={evt => onFileChange(evt)}
                     />
-                    <Button onClick={uploadFile} disabled={account === '' || fileName === ''}>
+                    <Button onClick={uploadFile} disabled={account === '' || !csvFile}>
                         <BackupIcon /> Import
                     </Button>
                 </Stack>

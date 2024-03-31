@@ -1,8 +1,9 @@
 const express = require("express");
 const mysqlConnection = require("../utils/database");
-const csv = require('csv-parser');
+const { parse } = require('csv');
 const fs = require('fs');
-const path = require('path');
+const os = require('os');
+const multer = require('multer');
 
 const Router = express.Router();
 
@@ -29,20 +30,20 @@ const normalizeData = data => {
     }
 };
 
-Router.post("/api/import", (req, res) => {
-  const results = [];
-  const { fileName, account } = req.body;
-  fs.createReadStream(path.resolve(__dirname, `../data/${fileName}`))
-  .pipe(csv())
-  .on('data', (data) => {
-    const normalizedData = normalizeData(data);
-    const record = { ...normalizedData, account };
-    results.push(record)
-    return results;
-  })
-  .on('end', () => {
+const upload = multer({ dest: os.tmpdir() });
+Router.post("/api/import", upload.single('file'), (req, res) => {
+  const { file } = req;
+  const { account } = req.body;
+  const data = fs.readFileSync(file.path);
+  parse(data, { columns: true }, (err, data) => {
+    const normalizedData = data.reduce((acc, row) => {
+      const normalized = normalizeData(row);
+      acc.push({ ...normalized, account });
+      return acc;
+    }, []);
+
     let insertError = false;
-    results.forEach(record => {
+    normalizedData.forEach(record => {
       const { account, date, amount, type, description, balance } = record;
       console.log(record)
       mysqlConnection.query(
@@ -63,7 +64,7 @@ Router.post("/api/import", (req, res) => {
       );
     });
     res.send(insertError || 'Success');
-  });
+  })
 });
 
 module.exports = Router;
